@@ -28,7 +28,7 @@ rapport.md        Choix techniques et difficultés
 Prérequis : Python 3.x.
 
 ```bash
-git clone <url-du-depot>
+git clone https://github.com/slowmfy/JSONPlaceholder-API-TEST.git
 cd JSONPlaceholder-API-TEST
 python -m venv venv
 ```
