@@ -1,6 +1,27 @@
+import logging
+
 from api import APIError, JSONPlaceholderClient
 
+LOG_FILE = "app.log"
+
+logger = logging.getLogger(__name__)
+
 client = JSONPlaceholderClient()
+
+
+def configurer_logs():
+    """Tout va dans le fichier ; le terminal affiche les logs à partir d'INFO."""
+    fichier = logging.FileHandler(LOG_FILE, encoding="utf-8")
+    fichier.setLevel(logging.DEBUG)
+    fichier.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s : %(message)s"))
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    console.setFormatter(logging.Formatter("[LOG %(levelname)s] %(message)s"))
+
+    logging.basicConfig(level=logging.DEBUG, handlers=[fichier, console])
+    # urllib3 (utilisé par requests) est très bavard en DEBUG.
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 # ---------- Saisies validées ----------
@@ -140,6 +161,8 @@ MENU = {
 
 
 def main():
+    configurer_logs()
+    logger.info("Démarrage de l'application")
     try:
         while True:
             print("\n===== JSONPlaceholder =====")
@@ -151,16 +174,21 @@ def main():
             if choix == "0":
                 break
             if choix not in MENU:
+                logger.warning("Choix invalide : %r", choix)
                 print("Choix invalide.")
                 continue
 
-            _, action = MENU[choix]
+            libelle, action = MENU[choix]
+            logger.info("Menu %s : %s", choix, libelle)
             try:
                 action()
             except APIError as e:
+                logger.error("Échec de '%s' : %s", libelle, e)
                 print(f"Erreur : {e}")
     except KeyboardInterrupt:
+        logger.info("Interruption par l'utilisateur (Ctrl+C)")
         print()
+    logger.info("Arrêt de l'application")
     print("Au revoir !")
 
 
