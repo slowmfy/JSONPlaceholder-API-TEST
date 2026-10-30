@@ -43,6 +43,7 @@ Le code Python est commenté pour un lecteur débutant. La documentation est org
 
 - [docs/explication.md](docs/explication.md) : apprendre à lire le projet et comprendre les tests, sans connaître Python ;
 - [docs/rapport.md](docs/rapport.md) : architecture, choix techniques, limites et défauts connus ;
+- [docs/comparaison-terminal-web.md](docs/comparaison-terminal-web.md) : différences entre les deux interfaces et leurs parcours ;
 - [docs/cas_de_tests.md](docs/cas_de_tests.md) : scénarios manuels avec données, étapes et résultats attendus.
 
 Si vous n'avez jamais utilisé Python, commencez par [docs/explication.md](docs/explication.md), puis lisez le rapport.

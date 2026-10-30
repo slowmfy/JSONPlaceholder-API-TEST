@@ -97,7 +97,8 @@ de numéro de cas manuel a été corrigé (`TC035` puis `TC036`).
 
 La suite vérifiée au moment de ce rapport contient **265 tests réussis**.
 Le détail pédagogique est dans [explication.md](explication.md), et les scénarios
-manuels dans [cas_de_tests.md](cas_de_tests.md).
+manuels dans [cas_de_tests.md](cas_de_tests.md). La comparaison détaillée des
+deux interfaces est dans [comparaison-terminal-web.md](comparaison-terminal-web.md).
 
 ## 7. Limites restantes
 
