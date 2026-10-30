@@ -21,7 +21,7 @@ USER_JSON = {
     "name": "Leanne Graham",
     "username": "Bret",
     "email": "Sincere@april.biz",
-    "phone": "1-770-736-8031 x56442",
+    "phone": "01 23 45 67 89",
     "website": "hildegard.org",
     "address": {"street": "Kulas Light", "suite": "Apt. 556", "city": "Gwenborough", "zipcode": "92998-3874"},
     "company": {"name": "Romaguera-Crona", "catchPhrase": "Multi-layered client-server neural-net"},

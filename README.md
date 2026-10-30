@@ -27,7 +27,7 @@ frontend/          Interface web Angular
 api_client.py      JsonPlaceholderClient : tous les appels à l'API
 resources.py       Description des 6 ressources (champs, validateurs, filtres)
 models.py          User, Post, Comment, Album, Photo, Todo, UserReport
-validators.py      Contrôle des saisies utilisateur (identifiants, textes, emails, URL)
+validators.py      Contrôle des saisies utilisateur (identifiants, textes, emails, URL, téléphones)
 exceptions.py      Hiérarchie d'exceptions (AppError, APIError, ValidationError…)
 i18n.py            Chargement des traductions
 logging_config.py  Configuration des logs et de leur rotation
@@ -39,7 +39,13 @@ docs/rapport.md        Choix d'architecture, difficultés, multilingue
 docs/cas_de_tests.md   Cas de tests manuels
 ```
 
-Le code Python est commenté pour un lecteur débutant. Si vous n'avez jamais utilisé Python, commencez par [docs/explication.md](docs/explication.md).
+Le code Python est commenté pour un lecteur débutant. La documentation est organisée ainsi :
+
+- [docs/explication.md](docs/explication.md) : apprendre à lire le projet et comprendre les tests, sans connaître Python ;
+- [docs/rapport.md](docs/rapport.md) : architecture, choix techniques, limites et défauts connus ;
+- [docs/cas_de_tests.md](docs/cas_de_tests.md) : scénarios manuels avec données, étapes et résultats attendus.
+
+Si vous n'avez jamais utilisé Python, commencez par [docs/explication.md](docs/explication.md), puis lisez le rapport.
 
 ## Démarrage rapide (Windows)
 
@@ -171,6 +177,12 @@ Les adresses sont contrôlées côté serveur dans `validators.py`, pour toutes 
 
 Seul le format est vérifié. Prouver qu'une adresse existe demanderait d'y envoyer un message de confirmation.
 
+## Validation des téléphones
+
+Les téléphones sont validés côté serveur et dans le formulaire web au format français : 10 chiffres,
+commençant par `0`, avec des espaces, tirets ou points facultatifs entre les groupes de deux chiffres,
+par exemple `01 23 45 67 89`. Les lettres et les formats internationaux sont refusés.
+
 ## Journalisation
 
 Les logs notent les requêtes HTTP et leurs codes retour, les créations, modifications et suppressions, les saisies refusées et les erreurs. Ils ne sont pas affichés à l'écran :
@@ -204,6 +216,17 @@ Les tests unitaires couvrent la validation des saisies, le traitement des répon
 
 Chaque test est expliqué dans [docs/explication.md](docs/explication.md). Les cas de tests manuels sont décrits dans [docs/cas_de_tests.md](docs/cas_de_tests.md).
 
-## Limites de l'API
+## Limites et données particulières de l'API
+
+Les données de démonstration de JSONPlaceholder ne suivent pas toujours les règles françaises.
+Par exemple, certains utilisateurs ont un numéro comme `1-770-736-8031 x56442` : le `x56442`
+est une extension, et ce format ressemble à un numéro nord-américain. L'application conserve ces
+valeurs lorsqu'elle les lit pour pouvoir afficher la réponse distante, mais refuse ce format lors
+de la création ou de la modification d'un utilisateur : les nouvelles saisies doivent respecter
+le format français défini ci-dessus. Il s'agit d'une différence volontaire entre les données
+existantes de l'API et les données que l'application autorise à écrire.
+
+Les tests utilisent des téléphones français pour tester la création et la modification, tout en
+conservant un cas de lecture de réponse distante afin de documenter cette limite.
 
 JSONPlaceholder simule les écritures : `POST`, `PUT` et `DELETE` renvoient une réponse réaliste, mais rien n'est réellement enregistré sur le serveur. Un post créé (toujours `id: 101`) n'est donc pas récupérable ensuite.

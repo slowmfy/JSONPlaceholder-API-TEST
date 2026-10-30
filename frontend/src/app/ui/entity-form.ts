@@ -60,7 +60,7 @@ let nextFormId = 0;
             }
             @default {
               <input
-                [type]="field.kind === 'text' ? 'text' : field.kind"
+                [type]="field.kind === 'phone' ? 'tel' : field.kind === 'text' ? 'text' : field.kind"
                 [id]="uid + field.name"
                 [value]="text(field)"
                 [class.invalid]="errorOf(field)"

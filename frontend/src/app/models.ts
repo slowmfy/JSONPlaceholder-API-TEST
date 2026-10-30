@@ -85,7 +85,7 @@ export interface Feedback {
 /** Description d'un champ, fournie par /api/schema (resources.py). */
 export interface FieldDef {
   name: string;
-  kind: 'text' | 'textarea' | 'email' | 'url' | 'bool' | 'ref';
+  kind: 'text' | 'textarea' | 'email' | 'url' | 'phone' | 'bool' | 'ref';
   required: boolean;
   ref: string | null;
 }

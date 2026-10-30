@@ -124,7 +124,7 @@ RESOURCES = {resource.name: resource for resource in (
         Field("name", "name", "text", validators.validate_name),
         Field("username", "username", "text", validators.validate_name),
         Field("email", "email", "email", validators.validate_email),
-        Field("phone", "phone", "text", validators.validate_optional_name, required=False),
+        Field("phone", "phone", "phone", validators.validate_phone, required=False),
         Field("website", "website", "text", validators.validate_optional_name, required=False),
     )),
     Resource("posts", "post", Post, (

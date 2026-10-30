@@ -36,6 +36,7 @@ _EMAIL_LOCAL = re.compile(rf"{_EMAIL_ATOM}(\.{_EMAIL_ATOM})*")
 # puis une extension en lettres (xn--... pour une extension accentuée).
 _EMAIL_LABEL = r"[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?"
 _EMAIL_DOMAIN = re.compile(rf"({_EMAIL_LABEL}\.)+([a-z]{{2,63}}|xn--{_EMAIL_LABEL})", re.IGNORECASE | re.ASCII)
+_PHONE = re.compile(r"0[1-9](?:[ .-]?[0-9]{2}){4}", re.ASCII)
 
 
 def _as_text(raw):
@@ -105,6 +106,14 @@ def validate_optional_body(raw):
 
 def validate_optional_name(raw):
     return optional_text(raw, config.MAX_NAME_LENGTH)
+
+
+def validate_phone(raw):
+    """Numéro français facultatif : 10 chiffres, avec séparateurs de groupes facultatifs."""
+    text = optional_text(raw, config.MAX_PHONE_LENGTH)
+    if text is not None and (not _PHONE.fullmatch(text) or not any(char.isdigit() for char in text)):
+        raise ValidationError("error_invalid_phone", value=text)
+    return text
 
 
 def _domain_to_ascii(domain):

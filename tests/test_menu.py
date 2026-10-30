@@ -221,7 +221,7 @@ def test_show_user_displays_every_detail():
 
     assert "Nom : Leanne Graham (@Bret)" in output
     assert "Email : Sincere@april.biz" in output
-    assert "Téléphone : 1-770-736-8031 x56442" in output
+    assert "Téléphone : 01 23 45 67 89" in output
     assert "Site web : hildegard.org" in output
     assert "Adresse : Kulas Light, Apt. 556, 92998-3874 Gwenborough" in output
     assert "Entreprise : Romaguera-Crona - Multi-layered client-server neural-net" in output

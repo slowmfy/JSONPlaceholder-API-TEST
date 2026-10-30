@@ -40,7 +40,8 @@
 | TC032 | Vider un champ facultatif | Web, cas limite | | |
 | TC033 | Cocher une tâche | Web, nominal | | |
 | TC034 | Utiliser l'explorateur d'API | Web, nominal | | |
-| TC035 | Vérifier la rotation des journaux | Logging | | |
+| TC035 | Refuser une lettre dans un téléphone | Web, validation | | |
+| TC036 | Vérifier la rotation des journaux | Logging | | |
 
 ---
 
@@ -252,11 +253,18 @@ Les cas suivants concernent l'interface web. **Prérequis** : application lancé
 - **Étapes** : 1. Page Explorateur API, cliquer sur l'exemple. 2. Cliquer sur `Envoyer`. 3. Saisir `/articles` et cliquer sur `Envoyer`.
 - **Résultat attendu** : étape 2 : statut 200, durée, JSON et commande `curl`. Étape 3 : message `Chemin non reconnu`, champ Chemin en rouge, aucune requête envoyée à JSONPlaceholder.
 
+### TC035 - Refuser une lettre dans un téléphone
+
+- **Objectif** : empêcher l'enregistrement d'une lettre dans un numéro.
+- **Données** : `01 23 45 67 89`, puis `010-692-6593 x09125`.
+- **Étapes** : ouvrir la modification d'un utilisateur, saisir le numéro, puis enregistrer.
+- **Résultat attendu** : le numéro français est accepté ; le numéro contenant une lettre est refusé avec une erreur sur le champ Téléphone.
+
 ---
 
 Le dernier cas revient au menu console. Il modifie un réglage le temps du test : pensez à le restaurer à la fin.
 
-### TC035 - Vérifier la rotation des journaux
+### TC036 - Vérifier la rotation des journaux
 - **Objectif** : vérifier que les journaux ne peuvent pas saturer le disque.
 - **Données** : `LOG_MAX_BYTES = 500` dans `config.py`, au lieu de `1_000_000`.
 - **Étapes** : 1. Modifier `config.py`. 2. Lancer `python main.py`, choisir `1`, puis lancer l'option `1` une dizaine de fois et quitter avec `0`. 3. Dans PowerShell, exécuter `Get-ChildItem app.log*`. 4. Remettre `LOG_MAX_BYTES = 1_000_000`.

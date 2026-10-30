@@ -60,3 +60,4 @@ MAX_NAME_LENGTH = 100
 MAX_URL_LENGTH = 500
 MAX_EMAIL_LENGTH = 254        # limite de la norme RFC 5321
 MAX_EMAIL_LOCAL_LENGTH = 64   # partie située avant le @
+MAX_PHONE_LENGTH = 14         # 10 chiffres français et 4 séparateurs facultatifs

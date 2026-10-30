@@ -121,6 +121,36 @@ def test_optional_text():
         validators.validate_optional_name("x" * 101)
 
 
+@pytest.mark.parametrize("raw", [
+    "01 23 45 67 89",
+    "01-23-45-67-89",
+    "06.12.34.56.78",
+    "0123456789",
+])
+def test_valid_phone(raw):
+    assert validators.validate_phone(raw) == raw
+
+
+@pytest.mark.parametrize("raw", [
+    "01AB234567",
+    "061234567",
+    "0012345678",
+    "+33123456789",
+    "01 23 45 67 8a",
+    "telephone",
+])
+def test_phone_rejects_letters(raw):
+    with pytest.raises(ValidationError) as error:
+        validators.validate_phone(raw)
+    assert error.value.key == "error_invalid_phone"
+
+
+def test_phone_rejects_more_than_14_characters():
+    with pytest.raises(ValidationError) as error:
+        validators.validate_phone("01 23 45 67 890")
+    assert error.value.key == "error_too_long"
+
+
 # ---------- Réponses et choix ----------
 
 @pytest.mark.parametrize("raw, expected", [("o", True), ("O", True), (" n ", False)])
