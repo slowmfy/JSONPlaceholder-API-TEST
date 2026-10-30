@@ -1,0 +1,43 @@
+@if (author.value(); as a) {
+  <a [routerLink]="['/users', a.id]" class="back">← {{ a.name }}</a>
+} @else {
+  <a routerLink="/posts" class="back">← {{ 'nav_posts' | t }}</a>
+}
+
+<app-status [loading]="post.source.isLoading()" [error]="post.source.error()" />
+<app-write-status [feedback]="post.feedback()" [error]="post.error()" />
+
+@if (post.exists()) {
+  @let p = post.value()!;
+  <section class="card">
+    @if (post.editing()) {
+      <app-entity-form
+        resource="posts"
+        [initial]="p"
+        [error]="post.error()"
+        [busy]="post.busy()"
+        (submitted)="post.save($event)"
+        (cancelled)="post.edit(false)"
+      />
+    } @else {
+      <div class="card-head">
+        <div>
+          <span class="tag">#{{ p.id }}</span>
+          <h1>{{ p.title }}</h1>
+          @if (author.value(); as a) {
+            <p class="muted">{{ 'post_by' | t: { name: a.name } }}</p>
+          }
+        </div>
+        <div class="inline">
+          <button type="button" class="ghost small" (click)="post.edit(true)">
+            {{ 'action_edit' | t }}
+          </button>
+          <app-confirm-button [busy]="post.busy()" (confirmed)="post.remove()" />
+        </div>
+      </div>
+      <p class="post-body">{{ p.body }}</p>
+    }
+  </section>
+
+  <app-comments-list [postId]="id()" />
+}

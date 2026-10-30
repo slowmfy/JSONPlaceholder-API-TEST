@@ -1,0 +1,44 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <a routerLink="/users" class="brand">
+      <span class="brand-mark" aria-hidden="true">&#123; &#125;</span>
+      <span>
+        <strong>JSONPlaceholder</strong>
+        @if (!i18n.unavailable()) {
+          <small>{{ 'web_subtitle' | t }}</small>
+        }
+      </span>
+    </a>
+
+    @if (!i18n.unavailable()) {
+      <nav>
+        <a routerLink="/users" routerLinkActive="active">{{ 'nav_users' | t }}</a>
+        <a routerLink="/posts" routerLinkActive="active">{{ 'nav_posts' | t }}</a>
+        <a routerLink="/albums" routerLinkActive="active">{{ 'nav_albums' | t }}</a>
+        <a routerLink="/todos" routerLinkActive="active">{{ 'nav_todos' | t }}</a>
+        <a routerLink="/explorer" routerLinkActive="active">{{ 'nav_explorer' | t }}</a>
+      </nav>
+      <label class="language">
+        <span class="visually-hidden">{{ 'nav_language' | t }}</span>
+        <select [value]="i18n.language()" (change)="changeLanguage($event)">
+          @for (language of i18n.languages(); track language.code) {
+            <option [value]="language.code" [selected]="language.code === i18n.language()">
+              {{ language.name }}
+            </option>
+          }
+        </select>
+      </label>
+    }
+  </div>
+</header>
+
+<main class="container">
+  @if (i18n.unavailable()) {
+    <!-- Seul texte non traduit : les traductions viennent justement de l'API injoignable. -->
+    <p class="alert" role="alert">
+      Serveur injoignable / Server unreachable : <code>python web_api.py</code>
+    </p>
+  } @else {
+    <router-outlet />
+  }
+</main>

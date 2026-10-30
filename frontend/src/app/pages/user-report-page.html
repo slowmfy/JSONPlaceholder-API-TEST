@@ -1,0 +1,60 @@
+<a [routerLink]="['/users', id()]" class="back">← {{ 'action_back' | t }}</a>
+
+<app-status [loading]="report.isLoading()" [error]="report.error()" />
+
+@if (reportData(); as r) {
+  <section class="card">
+    <p class="eyebrow">{{ 'menu_user_report' | t }}</p>
+    <h1>
+      <a [routerLink]="['/users', r.user.id]">{{ r.user.name }}</a>
+    </h1>
+    <p class="muted">{{ r.user.email }}</p>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-value">{{ r.post_count }}</span>
+        <span class="stat-label">{{ 'report_post_count' | t }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ r.comment_count }}</span>
+        <span class="stat-label">{{ 'report_comment_count' | t }}</span>
+      </div>
+    </div>
+  </section>
+
+  @if (r.most_commented; as best) {
+    <section class="card highlight">
+      <p class="eyebrow">{{ 'report_most_commented' | t }}</p>
+      <h2>
+        <a [routerLink]="['/posts', best.post.id]">{{ best.post.title }}</a>
+      </h2>
+      <p>{{ 'label_value' | t: { label: 'report_comments' | t, value: best.comments } }}</p>
+      @if (best.ties > 1) {
+        <p class="muted">{{ 'report_tie' | t: { count: best.ties } }}</p>
+      }
+    </section>
+
+    <section class="card">
+      <h2>{{ 'report_comments_per_post' | t }}</h2>
+      <ul class="bars">
+        @for (entry of r.posts; track entry.post.id) {
+          <li>
+            <a
+              [routerLink]="['/posts', entry.post.id]"
+              class="bar-label"
+              [title]="entry.post.title"
+            >
+              #{{ entry.post.id }} {{ entry.post.title }}
+            </a>
+            <span class="bar-track">
+              <span class="bar" [style.width.%]="(entry.comments / maxComments()) * 100"></span>
+            </span>
+            <span class="bar-value">{{ entry.comments }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+  } @else {
+    <p class="muted">{{ 'no_posts' | t: { user_id: r.user.id } }}</p>
+  }
+}

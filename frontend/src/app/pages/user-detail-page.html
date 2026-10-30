@@ -1,0 +1,80 @@
+<a routerLink="/users" class="back">← {{ 'nav_users' | t }}</a>
+
+<app-status [loading]="user.source.isLoading()" [error]="user.source.error()" />
+<app-write-status [feedback]="user.feedback()" [error]="user.error()" />
+
+@if (user.exists()) {
+  @let u = user.value()!;
+  <section class="card">
+    @if (user.editing()) {
+      <app-entity-form
+        resource="users"
+        [initial]="u"
+        [error]="user.error()"
+        [busy]="user.busy()"
+        (submitted)="user.save($event)"
+        (cancelled)="user.edit(false)"
+      />
+    } @else {
+      <div class="card-head">
+        <div>
+          <h1>{{ u.name }}</h1>
+          <p class="muted">&#64;{{ u.username }}</p>
+        </div>
+        <div class="inline">
+          <a class="button small ghost" [routerLink]="['/users', u.id, 'report']">{{
+            'action_report' | t
+          }}</a>
+          <button type="button" class="ghost small" (click)="user.edit(true)">
+            {{ 'action_edit' | t }}
+          </button>
+          <app-confirm-button [busy]="user.busy()" (confirmed)="user.remove()" />
+        </div>
+      </div>
+
+      <dl class="details">
+        <dt>{{ 'label_email' | t }}</dt>
+        <dd>
+          <a [href]="'mailto:' + u.email">{{ u.email }}</a>
+        </dd>
+        <dt>{{ 'label_phone' | t }}</dt>
+        <dd>{{ u.phone }}</dd>
+        <dt>{{ 'label_website' | t }}</dt>
+        <dd>{{ u.website }}</dd>
+        <dt>{{ 'label_address' | t }}</dt>
+        <dd>{{ u.street }}, {{ u.suite }}, {{ u.zipcode }} {{ u.city }}</dd>
+        <dt>{{ 'label_company' | t }}</dt>
+        <dd>
+          {{ u.company_name }} <span class="muted">— {{ u.company_catchphrase }}</span>
+        </dd>
+      </dl>
+    }
+  </section>
+
+  <div class="tabs" role="tablist">
+    @for (name of tabs; track name) {
+      <button
+        type="button"
+        role="tab"
+        class="tab"
+        [class.active]="tab() === name"
+        [attr.aria-selected]="tab() === name"
+        (click)="tab.set(name)"
+      >
+        {{ 'res_' + name | t }}
+      </button>
+    }
+  </div>
+
+  @switch (tab()) {
+    @case ('posts') {
+      <app-titled-list resource="posts" [userId]="id()" [embedded]="true" />
+    }
+    @case ('albums') {
+      <app-titled-list resource="albums" [userId]="id()" [embedded]="true" />
+    }
+    @case ('todos') {
+      <app-todos-list [userId]="id()" [embedded]="true" />
+    }
+  }
+}

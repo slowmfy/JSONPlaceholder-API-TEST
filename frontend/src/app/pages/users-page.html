@@ -1,0 +1,118 @@
+<section class="card">
+  <h2>{{ 'goto_title' | t }}</h2>
+  <div class="goto">
+    @for (target of targets; track target.route) {
+      <form (submit)="$event.preventDefault(); open(target.route, target.value())">
+        <label [for]="'goto-' + target.route">{{ target.label | t }}</label>
+        <div class="inline">
+          <input
+            [id]="'goto-' + target.route"
+            inputmode="numeric"
+            [value]="target.value()"
+            (input)="target.value.set($any($event.target).value)"
+          />
+          <button type="submit" [disabled]="!target.value().trim()">{{ 'action_open' | t }}</button>
+        </div>
+      </form>
+    }
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h1>{{ 'nav_users' | t }}</h1>
+    <div class="inline">
+      <input
+        type="search"
+        class="search"
+        [placeholder]="'search_users' | t"
+        [attr.aria-label]="'search_users' | t"
+        [value]="search()"
+        (input)="search.set($any($event.target).value)"
+      />
+      <button type="button" (click)="list.edit('new')">{{ 'action_add' | t }}</button>
+    </div>
+  </div>
+
+  <app-status [loading]="list.source.isLoading()" [error]="list.source.error()" />
+  <app-write-status [feedback]="list.feedback()" [error]="list.error()" />
+
+  @if (list.editing() === 'new') {
+    <div class="panel">
+      <app-entity-form
+        resource="users"
+        submitLabel="action_create"
+        [error]="list.error()"
+        [busy]="list.busy()"
+        (submitted)="list.save($event)"
+        (cancelled)="list.edit(null)"
+      />
+    </div>
+  }
+
+  @if (list.source.hasValue()) {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="num">{{ 'label_id' | t }}</th>
+            <th>{{ 'label_name' | t }}</th>
+            <th>{{ 'label_email' | t }}</th>
+            <th>{{ 'label_city' | t }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of filtered(); track user) {
+            @if (list.editing() === user) {
+              <tr>
+                <td colspan="5">
+                  <div class="panel">
+                    <app-entity-form
+                      resource="users"
+                      [initial]="user"
+                      [error]="list.error()"
+                      [busy]="list.busy()"
+                      (submitted)="list.save($event)"
+                      (cancelled)="list.edit(null)"
+                    />
+                  </div>
+                </td>
+              </tr>
+            } @else {
+              <tr>
+                <td class="num">{{ user.id }}</td>
+                <td>
+                  @if (list.isLocal(user)) {
+                    {{ user.name }}
+                  } @else {
+                    <a [routerLink]="['/users', user.id]">{{ user.name }}</a>
+                  }
+                </td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.city }}</td>
+                <td class="actions">
+                  <div class="inline end">
+                    @if (!list.isLocal(user)) {
+                      <a class="button small ghost" [routerLink]="['/users', user.id, 'report']">{{
+                        'action_report' | t
+                      }}</a>
+                    }
+                    <button type="button" class="ghost small" (click)="list.edit(user)">
+                      {{ 'action_edit' | t }}
+                    </button>
+                    <app-confirm-button [busy]="list.busy()" (confirmed)="list.remove(user)" />
+                  </div>
+                </td>
+              </tr>
+            }
+          } @empty {
+            <tr>
+              <td colspan="5" class="muted">{{ 'no_results' | t }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

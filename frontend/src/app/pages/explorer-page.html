@@ -1,0 +1,78 @@
+<section class="card">
+  <h1>{{ 'nav_explorer' | t }}</h1>
+  <p class="muted">{{ 'explorer_intro' | t }}</p>
+
+  <p class="eyebrow">{{ 'explorer_examples' | t }}</p>
+  <div class="chips">
+    @for (example of examples; track example.method + example.path) {
+      <button type="button" class="chip" (click)="use(example)">
+        <b>{{ example.method }}</b> {{ example.path }}
+      </button>
+    }
+  </div>
+
+  <form class="form" novalidate (submit)="$event.preventDefault(); send()">
+    <div class="request-line">
+      <div class="field">
+        <label for="explorer-method">{{ 'field_method' | t }}</label>
+        <select id="explorer-method" (change)="method.set($any($event.target).value)">
+          @for (name of methods; track name) {
+            <option [value]="name" [selected]="name === method()">{{ name }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="explorer-path">{{ 'field_path' | t }}</label>
+        <input
+          id="explorer-path"
+          [value]="path()"
+          (input)="path.set($any($event.target).value)"
+          [class.invalid]="error()?.field === 'path'"
+        />
+      </div>
+    </div>
+
+    @if (hasBody()) {
+      <div class="field">
+        <label for="explorer-body">{{ 'field_request_body' | t }}</label>
+        <textarea
+          id="explorer-body"
+          class="mono"
+          rows="6"
+          [value]="body()"
+          [class.invalid]="error()?.field === 'body'"
+          (input)="body.set($any($event.target).value)"
+        ></textarea>
+      </div>
+    }
+
+    @if (error(); as e) {
+      <p class="alert" role="alert">{{ e.key | t: e.params }}</p>
+    }
+
+    <div class="inline">
+      <button type="submit" [disabled]="busy()">{{ 'action_send' | t }}</button>
+    </div>
+  </form>
+</section>
+
+@if (busy()) {
+  <p class="muted">{{ 'loading' | t }}</p>
+}
+
+@if (result(); as r) {
+  <section class="card">
+    <div class="card-head">
+      <h2>{{ 'explorer_response' | t }}</h2>
+      <div class="inline">
+        <span class="pill" [class.bad]="!ok()">{{ 'explorer_status' | t }} {{ r.status }}</span>
+        <span class="muted">{{
+          'label_value' | t: { label: 'explorer_time' | t, value: r.elapsed_ms + ' ms' }
+        }}</span>
+      </div>
+    </div>
+    <pre class="json">{{ formatted() }}</pre>
+    <p class="eyebrow">{{ 'explorer_curl' | t }}</p>
+    <pre class="json short">{{ sentCurl() }}</pre>
+  </section>
+}
